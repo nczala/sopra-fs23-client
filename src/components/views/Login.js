@@ -56,7 +56,7 @@ const Login = props => {
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push('/game');
     } catch (error) {
-      alert('Invalid username or password');
+      alert(`Invalid username or password \n${handleError(error)}`);
     }
   };
 

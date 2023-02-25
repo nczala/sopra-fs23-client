@@ -50,7 +50,7 @@ const Registration = props => {
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push('/game');
     } catch (error) {
-      alert(error.response.data.message);
+      alert('Invalide registration' + handleError(error));
     }
   };
 
