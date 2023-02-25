@@ -7,12 +7,6 @@ import 'styles/views/Login.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
-/*
-It is possible to add multiple components inside a single file,
-however be sure not to clutter your files with an endless amount!
-As a rule of thumb, use one file per component and only add small,
-specific components that belong to the main one in the same file.
- */
 const FormField = props => {
   return (
     <div className="login field">
@@ -37,15 +31,15 @@ FormField.propTypes = {
   onChange: PropTypes.func
 };
 
-const Login = props => {
+const Registration = props => {
   const history = useHistory();
   const [password, setPassword] = useState(null);
   const [username, setUsername] = useState(null);
 
-  const doLogin = async () => {
+  const register = async () => {
     try {
       const requestBody = JSON.stringify({username, password});
-      const response = await api.post('/login', requestBody);
+      const response = await api.post('/users', requestBody);
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
@@ -56,12 +50,12 @@ const Login = props => {
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push('/game');
     } catch (error) {
-      alert('Invalid username or password');
+      alert(error.response.data.message);
     }
   };
 
-  const navigateToRegistration = () => {
-    history.push('/register');
+  const navigateToLogin = () => {
+    history.push('/login');
   };
 
   return (
@@ -79,25 +73,25 @@ const Login = props => {
             type="password"
             onChange={n => setPassword(n)}
           />
-          <div className="login-buttons-container">
-          <div className="login button-container">
-            <Button
-              disabled={!username || !password}
-              width="100%"
-              onClick={() => doLogin()}
-            >
-              Login
-            </Button>
-          </div>
+          <div className="login-buttons-containers">
           <div className="registration button-container">
             <Button
               width="100%"
-              onClick={() => navigateToRegistration()}
+              onClick={() => register()}
             >
              Register
             </Button>
           </div>
-          </div>
+          <p className="already-registered">Already registered</p>
+          <div className="registration button-container">
+                      <Button
+                        width="100%"
+                        onClick={() => navigateToLogin()}
+                      >
+                      Go back to Login
+                      </Button>
+                    </div>
+        </div>
         </div>
       </div>
     </BaseContainer>
@@ -108,4 +102,4 @@ const Login = props => {
  * You can get access to the history object's properties via the withRouter.
  * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
  */
-export default Login;
+export default Registration;
