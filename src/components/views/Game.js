@@ -6,7 +6,7 @@ import {useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
-import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
+//import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 
 const Player = ({user}) => {
   const history = useHistory();
@@ -41,7 +41,7 @@ const Game = () => {
   const logout = () => {
     const requestbody = JSON.stringify({token: localStorage.getItem('token'), status: 1})
     console.log('requestbody', requestbody)
-    const response = api.put('/logout', requestbody)
+    api.put('/logout', requestbody)
     localStorage.removeItem('token');
     history.push('/login');
   }
