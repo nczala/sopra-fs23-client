@@ -41,6 +41,10 @@
     display: flex;
     align-items: center;
     background: lighten($background, 5);
+    cursor: pointer;
+  }
+  &.container:hover {
+      background: red;
   }
   &.name {
     font-weight: 300;

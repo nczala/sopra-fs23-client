@@ -6,14 +6,22 @@ import {useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
+import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 
-const Player = ({user}) => (
-  <div className="player container">
-    <div className="player username">{user.username}</div>
+const Player = ({user}) => {
+  const history = useHistory();
+  const handleClick = () => {
+    history.push(`./profile/${user.id}`, {user})
+  }
+
+  return ( <div onClick={() => handleClick()} className="player container">
+    <div className="player username">{user.username}
+    </div>
     <div className="player name">{user.name}</div>
     <div className="player id">id: {user.id}</div>
   </div>
-);
+  );
+};
 
 Player.propTypes = {
   user: PropTypes.object
@@ -31,6 +39,9 @@ const Game = () => {
   const [users, setUsers] = useState(null);
 
   const logout = () => {
+    const requestbody = JSON.stringify({token: localStorage.getItem('token'), status: 1})
+    console.log('requestbody', requestbody)
+    const response = api.put('/logout', requestbody)
     localStorage.removeItem('token');
     history.push('/login');
   }
@@ -94,7 +105,7 @@ const Game = () => {
 
   return (
     <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
+      <h2>Registered Users</h2>
       <p className="game paragraph">
         Get all users from secure endpoint:
       </p>
