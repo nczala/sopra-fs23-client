@@ -37,13 +37,15 @@ const Registration = (props) => {
   const register = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
-      const response = await api.post("/users", requestBody);
-
-      // Get the returned user and update a new object.
-      const user = new User(response.data);
+      const userResponse = await api.post("/users", requestBody);
+      const loginResponse = await api.post("/session", requestBody);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
+      localStorage.setItem("token", loginResponse.data.token);
+      localStorage.setItem("id", loginResponse.data.userid);
+
+      // Get the returned user and update a new object.
+      const user = new User(userResponse.data);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push("/game");

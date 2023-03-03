@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api, handleError } from "helpers/api";
+import { api, apiWithAuth, handleError } from "helpers/api";
 import User from "models/User";
 import { useHistory } from "react-router-dom";
 import { Button } from "components/ui/Button";
@@ -13,16 +13,16 @@ however be sure not to clutter your files with an endless amount!
 As a rule of thumb, use one file per component and only add small,
 specific components that belong to the main one in the same file.
  */
-const FormField = (props) => {
+const FormField = ({ label, value, type, onChange }) => {
   return (
     <div className="login field">
-      <label className="login label">{props.label}</label>
+      <label className="login label">{label}</label>
       <input
         className="login input"
         placeholder="enter here.."
-        value={props.value}
-        type={props.type}
-        onChange={(e) => props.onChange(e.target.value)}
+        value={value}
+        type={type}
+        onChange={(e) => onChange(e.target.value)}
       />
     </div>
   );
@@ -43,13 +43,18 @@ const Login = (props) => {
   const doLogin = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
-      const response = await api.post("/login", requestBody);
-
-      // Get the returned user and update a new object.
-      const user = new User(response.data);
+      const loginResponse = await api.post("/session", requestBody);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
+      localStorage.setItem("token", loginResponse.token);
+      localStorage.setItem("id", loginResponse.userid);
+
+      const userResponse = await apiWithAuth(loginResponse.token).get(
+        `/users${loginResponse.userid}`
+      );
+
+      // Get the returned user and update a new object.
+      const user = new User(userResponse.data);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push("/game");
