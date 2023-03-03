@@ -15,9 +15,7 @@ const Player = ({user}) => {
   }
 
   return ( <div onClick={() => handleClick()} className="player container">
-    <div className="player username">{user.username}
-    </div>
-    <div className="player name">{user.name}</div>
+    <div className="player username">{user.username}</div>
     <div className="player id">id: {user.id}</div>
   </div>
   );
