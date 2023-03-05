@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
-import User from "models/User";
 import { useHistory } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
@@ -37,7 +36,7 @@ const Registration = (props) => {
   const register = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
-      const userResponse = await api.post("/users", requestBody);
+      await api.post("/users", requestBody);
       const loginResponse = await api.post("/session", requestBody);
 
       // Store the token into the local storage.

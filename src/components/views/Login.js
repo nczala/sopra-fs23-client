@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { api, apiWithAuth, handleError } from "helpers/api";
-import User from "models/User";
 import { useHistory } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
@@ -50,12 +49,9 @@ const Login = (props) => {
       localStorage.setItem("token", loginResponse.data.token);
       localStorage.setItem("id", loginResponse.data.userid);
 
-      const userResponse = await apiWithAuth(loginResponse.data.token).get(
+      await apiWithAuth(loginResponse.data.token).get(
         `/users/${loginResponse.data.userid}`
       );
-
-      // Get the returned user and update a new object.
-      const user = new User(userResponse.data);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push("/game");

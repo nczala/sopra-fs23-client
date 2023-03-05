@@ -49,7 +49,7 @@ const EditableProfile = ({ user, setUser, setInEditMode }) => {
         />
       </div>
       <Button
-        disabled={user.username == username && user.birthday == birthday}
+        disabled={user.username === username && user.birthday === birthday}
         style={{ marginBottom: "5px" }}
         onClick={() => handleClick()}
       >
@@ -86,22 +86,23 @@ const NonEditableProfile = ({ user }) => {
 
 const Profile = (props) => {
   const history = useHistory();
-  const userid = props.location.state.userid;
   const [user, setUser] = useState({ username: "" });
 
   const [inEditMode, setInEditMode] = useState(false);
   const [isCurrentUserProfile, setIsCurrentUserProfile] = useState(false);
 
   useEffect(() => {
+    const userid = props.location.state.userid;
+
     async function fetchData() {
       try {
         const token = localStorage.getItem("token");
         const response = await apiWithAuth(token).get(`/users/${userid}`);
         const userToDisplay = response.data;
-        setUser(userToDisplay);
+        setUser(() => userToDisplay);
 
         if (isEditEnabled(userid)) {
-          setIsCurrentUserProfile(!isCurrentUserProfile);
+          setIsCurrentUserProfile(() => true);
         }
       } catch (error) {
         console.error(`${handleError(error)}`);
@@ -110,11 +111,11 @@ const Profile = (props) => {
     }
 
     fetchData();
-  }, []);
+  }, [props]);
 
   const isEditEnabled = (toBeEditedUserId) => {
-    const currentUserId = localStorage.getItem("id");
-    return toBeEditedUserId == currentUserId;
+    const currentUserId = parseInt(localStorage.getItem("id"));
+    return toBeEditedUserId === currentUserId;
   };
 
   return (

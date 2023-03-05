@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, apiWithAuth, handleError } from "helpers/api";
+import { apiWithAuth, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useHistory } from "react-router-dom";
@@ -18,7 +18,7 @@ const Player = ({ user }) => {
     <div
       onClick={() => handleClick()}
       className={
-        localStorage.getItem("id") == user.id
+        parseInt(localStorage.getItem("id")) === user.id
           ? "player container logged-out"
           : "player container logged-in"
       }
