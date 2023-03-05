@@ -1,4 +1,3 @@
-// import {useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Profile.scss";
 import { useState, useEffect } from "react";
@@ -120,9 +119,13 @@ const Profile = (props) => {
 
   return (
     <BaseContainer>
-      <div className="login container" style={{ width: 500 }}>
+      <div className="login container" style={{ width: 500, height: "20em" }}>
         <div className="login form">
-          {isCurrentUserProfile ? "Your Profile" : user.username + "'s Profile"}
+          <h3>
+            {isCurrentUserProfile
+              ? "Your Profile"
+              : user.username + "'s Profile"}
+          </h3>
           {!inEditMode && <NonEditableProfile user={user} />}
           {inEditMode && (
             <EditableProfile
@@ -134,6 +137,14 @@ const Profile = (props) => {
           {isCurrentUserProfile && (
             <Button onClick={() => setInEditMode(!inEditMode)}>
               {!inEditMode ? "Edit" : "Go Back"}
+            </Button>
+          )}
+          {!inEditMode && (
+            <Button
+              onClick={() => history.push("/game")}
+              style={{ marginTop: "5px" }}
+            >
+              Back to User Overview
             </Button>
           )}
         </div>

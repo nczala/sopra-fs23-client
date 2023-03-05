@@ -15,7 +15,14 @@ const Player = ({ user }) => {
   };
 
   return (
-    <div onClick={() => handleClick()} className="player container">
+    <div
+      onClick={() => handleClick()}
+      className={
+        localStorage.getItem("id") == user.id
+          ? "player container logged-out"
+          : "player container logged-in"
+      }
+    >
       <div className="player username">{user.username}</div>
       <div className="player id">id: {user.id}</div>
     </div>

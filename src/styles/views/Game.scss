@@ -44,8 +44,11 @@
     background: lighten($background, 5);
     cursor: pointer;
   }
-  &.container:hover {
-    background: red;
+  &.logged-out:hover {
+    background: darkcyan;
+  }
+  &.logged-in:hover {
+    background: darkorange;
   }
   &.name {
     font-weight: 300;

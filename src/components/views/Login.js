@@ -44,13 +44,14 @@ const Login = (props) => {
     try {
       const requestBody = JSON.stringify({ username, password });
       const loginResponse = await api.post("/session", requestBody);
+      console.log(loginResponse.data.token, loginResponse.data.userid);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", loginResponse.token);
-      localStorage.setItem("id", loginResponse.userid);
+      localStorage.setItem("token", loginResponse.data.token);
+      localStorage.setItem("id", loginResponse.data.userid);
 
-      const userResponse = await apiWithAuth(loginResponse.token).get(
-        `/users${loginResponse.userid}`
+      const userResponse = await apiWithAuth(loginResponse.data.token).get(
+        `/users/${loginResponse.data.userid}`
       );
 
       // Get the returned user and update a new object.
@@ -71,6 +72,7 @@ const Login = (props) => {
     <BaseContainer>
       <div className="login container">
         <div className="login form">
+          <h2 style={{ textAlign: "center" }}>Login Page</h2>
           <FormField
             label="Username"
             value={username}
@@ -92,7 +94,7 @@ const Login = (props) => {
                 Login
               </Button>
             </div>
-            <div className="registration button-container">
+            <div className="login button-container">
               <Button width="100%" onClick={() => navigateToRegistration()}>
                 Register
               </Button>

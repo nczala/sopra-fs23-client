@@ -31,8 +31,8 @@ FormField.propTypes = {
 
 const Registration = (props) => {
   const history = useHistory();
-  const [password, setPassword] = useState(null);
-  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const register = async () => {
     try {
@@ -43,9 +43,6 @@ const Registration = (props) => {
       // Store the token into the local storage.
       localStorage.setItem("token", loginResponse.data.token);
       localStorage.setItem("id", loginResponse.data.userid);
-
-      // Get the returned user and update a new object.
-      const user = new User(userResponse.data);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push("/game");
@@ -62,6 +59,7 @@ const Registration = (props) => {
     <BaseContainer>
       <div className="login container">
         <div className="login form">
+          <h2 style={{ textAlign: "center" }}>Registration Page</h2>
           <FormField
             label="Username"
             value={username}
@@ -74,13 +72,16 @@ const Registration = (props) => {
             onChange={(n) => setPassword(n)}
           />
           <div className="login-buttons-containers">
-            <div className="registration button-container">
-              <Button width="100%" onClick={() => register()}>
+            <div className="login button-container">
+              <Button
+                disabled={!username || !password}
+                width="100%"
+                onClick={() => register()}
+              >
                 Register
               </Button>
             </div>
-            <p className="already-registered">Already registered</p>
-            <div className="registration button-container">
+            <div className="login button-container">
               <Button width="100%" onClick={() => navigateToLogin()}>
                 Go back to Login
               </Button>
