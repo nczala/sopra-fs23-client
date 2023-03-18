@@ -81,7 +81,7 @@ const DrawingBoard = () => {
       canvas.removeEventListener("mouseup", handleMouseUp);
       canvas.removeEventListener("mouseout", handleMouseOut);
     };
-  }, [color]);
+  }, [color, isCurrentPainter]);
 
   function handleColorChange(event) {
     setColor(event.target.value);
