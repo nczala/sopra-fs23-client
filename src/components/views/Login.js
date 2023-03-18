@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { api, apiWithAuth, handleError } from "helpers/api";
+import { api, handleError } from "helpers/api";
 import { useHistory } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
@@ -48,10 +48,6 @@ const Login = (props) => {
       // Store the token into the local storage.
       localStorage.setItem("token", loginResponse.data.token);
       localStorage.setItem("id", loginResponse.data.userid);
-
-      await apiWithAuth(loginResponse.data.token).get(
-        `/users/${loginResponse.data.userid}`
-      );
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       history.push("/game");

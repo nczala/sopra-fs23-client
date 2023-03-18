@@ -107,6 +107,9 @@ const Game = () => {
       <h2>Registered Users</h2>
       <p className="game paragraph">Get all users from secure endpoint:</p>
       {content}
+      <Button width="100%" onClick={() => history.push("/drawingboard")}>
+        Drawing Board
+      </Button>
     </BaseContainer>
   );
 };
