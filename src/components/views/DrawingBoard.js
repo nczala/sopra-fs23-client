@@ -3,21 +3,33 @@ import { useHistory } from "react-router-dom";
 import { getDomain } from "helpers/getDomain";
 import io from "socket.io-client";
 import SockJsClient from "react-stomp";
+import { drawLine } from "components/views/drawLine";
 
-const colors = ["black", "red", "green", "yellow", "blue"];
+const colors = ["black", "brown", "red", "green", "yellow", "blue"];
 
 const url = getDomain();
 //export const socket = io(url, { autoConnect: false });
 
 const DrawingBoard = () => {
-  //const clientRef = null;
   const clientRef = useRef(null);
-  //const [clientRef, setClientRef] = useState(null);
 
   const canvasRef = useRef(null);
   const history = useHistory();
   const [color, setColor] = useState(colors[0]);
-  //socket.connect();
+
+  const painterId = 1;
+  const [isCurrentPainter, setIsCurrentPainter] = useState(false);
+
+  useEffect(() => {
+    if (currentUserIsPainter(painterId)) {
+      setIsCurrentPainter(() => true);
+    }
+  });
+
+  const currentUserIsPainter = (painterId) => {
+    const currentUserId = parseInt(localStorage.getItem("id"));
+    return painterId === currentUserId;
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -26,19 +38,6 @@ const DrawingBoard = () => {
     let isDrawing = false;
     let lastX = 0;
     let lastY = 0;
-
-    function drawLine(x1, y1, x2, y2) {
-      context.beginPath();
-      context.moveTo(x1, y1);
-      context.lineTo(x2, y2);
-      context.lineWidth = 5;
-      context.strokeStyle = color;
-      context.lineJoin = "round";
-      context.closePath();
-      context.stroke();
-
-      //socket.emit(x1, y1, x2, y2, color);
-    }
 
     function handleMouseDown(event) {
       isDrawing = true;
@@ -55,8 +54,8 @@ const DrawingBoard = () => {
       const currentX = event.clientX - bounds.left;
       const currentY = event.clientY - bounds.top;
 
-      drawLine(lastX, lastY, currentX, currentY);
-      sendMessage(lastX, lastY, currentX, currentY, color);
+      drawLine(canvasRef, lastX, lastY, currentX, currentY, color);
+      sendDrawingMessage(lastX, lastY, currentX, currentY, color);
       lastX = currentX;
       lastY = currentY;
     }
@@ -69,11 +68,12 @@ const DrawingBoard = () => {
       isDrawing = false;
     }
 
-    canvas.addEventListener("mousedown", handleMouseDown);
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mouseup", handleMouseUp);
-    canvas.addEventListener("mouseout", handleMouseOut);
-
+    if (isCurrentPainter) {
+      canvas.addEventListener("mousedown", handleMouseDown);
+      canvas.addEventListener("mousemove", handleMouseMove);
+      canvas.addEventListener("mouseup", handleMouseUp);
+      canvas.addEventListener("mouseout", handleMouseOut);
+    }
     // clean-up - remove Eventlistener when page/component unmount
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
@@ -87,13 +87,12 @@ const DrawingBoard = () => {
     setColor(event.target.value);
   }
 
-  function handleClear() {
-    const canvas = canvasRef.current;
+  function handleClear(canvas) {
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  const sendMessage = (x1, y1, x2, y2, color) => {
+  const sendDrawingMessage = (x1, y1, x2, y2, color) => {
     const requestBody = JSON.stringify({
       prevX: x1,
       prevY: y1,
@@ -102,7 +101,12 @@ const DrawingBoard = () => {
       color: color,
     });
     console.log(requestBody);
-    clientRef.current.sendMessage("app/drawing-all", requestBody);
+    clientRef.current.sendMessage("/app/drawing-all", requestBody);
+  };
+
+  const sendClearMessage = () => {
+    const requestBody = JSON.stringify({ task: "clear drawing board" });
+    clientRef.current.sendMessage("/app/drawing-clear", requestBody);
   };
 
   const download = async () => {
@@ -130,36 +134,58 @@ const DrawingBoard = () => {
         height={400}
         style={{ border: "2px solid black", backgroundColor: "white" }}
       />
-      <div>
-        <label>
-          Color:
-          <select value={color} onChange={handleColorChange}>
-            {colors.map((color) => (
-              <option key={color} value={color}>
-                {color}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button onClick={handleClear}>Clear</button>
-        <button onClick={() => history.push("/game")}>Go Back</button>
-      </div>
+      {isCurrentPainter && (
+        <div>
+          <label>
+            Color:
+            <select value={color} onChange={handleColorChange}>
+              {colors.map((color) => (
+                <option key={color} value={color}>
+                  {color}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button onClick={() => sendClearMessage()}>Clear</button>
+          <button onClick={() => history.push("/game")}>Go Back</button>
+        </div>
+      )}
       <SockJsClient
         url={url + "/ws"}
-        topics={["/topic/drawing"]}
+        topics={["/topic/drawing", "/topic/clear"]}
         onConnect={() => {
           console.log("connected");
         }}
         onDisconnect={() => {
           console.log("Disconnected");
         }}
-        onMessage={(msg) => {
+        onMessage={(msg, topic) => {
+          if (topic === "/topic/drawing") {
+            drawLine(
+              canvasRef,
+              msg.prevX,
+              msg.prevY,
+              msg.currX,
+              msg.currY,
+              msg.color
+            );
+            console.log("draw", msg);
+          } else if (topic == "/topic/clear") {
+            handleClear(canvasRef.current);
+          }
+          drawLine(
+            canvasRef,
+            msg.prevX,
+            msg.prevY,
+            msg.currX,
+            msg.currY,
+            msg.color
+          );
           console.log(msg);
         }}
         ref={(client) => {
           console.log("return");
           clientRef.current = client;
-          //setClientRef(client);
         }}
       />
     </div>
