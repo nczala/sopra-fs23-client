@@ -5,6 +5,11 @@ import { LoginGuard } from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
 import Registration from "components/views/Registration";
 import DrawingBoard from "components/views/DrawingBoard";
+import Lobby from "components/views/Lobby";
+import Test from "components/views/Test";
+import LobbyView from "components/views/LobbyView";
+import LobbySettings from "components/views/LobbySettings";
+import GameView from "components/views/GameView";
 
 /**
  * Main router of your application.
@@ -36,6 +41,21 @@ const AppRouter = () => {
         </Route>
         <Route exact path="/drawingboard">
           <DrawingBoard />
+        </Route>
+        <Route exact path="/lobbyoverview">
+          <LobbyView />
+        </Route>
+        <Route exact path="/lobbysettings">
+          <LobbySettings />
+        </Route>
+        <Route exact path="/gameview">
+          <GameView />
+        </Route>
+        <Route exact path="/test">
+          <Test />
+        </Route>
+        <Route exact path="/lobbies">
+          <Lobby />
         </Route>
         <Route exact path="/">
           <Redirect to="/game" />

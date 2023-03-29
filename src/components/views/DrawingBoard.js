@@ -1,14 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { getDomain } from "helpers/getDomain";
-import io from "socket.io-client";
 import SockJsClient from "react-stomp";
 import { drawLine } from "components/views/drawLine";
 
 const colors = ["black", "brown", "red", "green", "yellow", "blue"];
 
 const url = getDomain();
-//export const socket = io(url, { autoConnect: false });
 
 const DrawingBoard = () => {
   const clientRef = useRef(null);
@@ -16,6 +14,8 @@ const DrawingBoard = () => {
   const canvasRef = useRef(null);
   const history = useHistory();
   const [color, setColor] = useState(colors[0]);
+  //const [lobbyId, setLobbyId] = useState(null);
+  const lobbyId = localStorage.getItem("lobbyId");
 
   const painterId = 1;
   const [isCurrentPainter, setIsCurrentPainter] = useState(false);
@@ -33,7 +33,6 @@ const DrawingBoard = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
 
     let isDrawing = false;
     let lastX = 0;
@@ -101,12 +100,13 @@ const DrawingBoard = () => {
       color: color,
     });
     console.log(requestBody);
-    clientRef.current.sendMessage("/app/drawing-all", requestBody);
+    //clientRef.current.sendMessage("/app/drawing-all", requestBody);
+    clientRef.current.sendMessage(`/app/drawing-all/${lobbyId}`, requestBody);
   };
 
   const sendClearMessage = () => {
     const requestBody = JSON.stringify({ task: "clear drawing board" });
-    clientRef.current.sendMessage("/app/drawing-clear", requestBody);
+    clientRef.current.sendMessage(`/app/drawing-clear/${lobbyId}`, requestBody);
   };
 
   const download = async () => {
@@ -118,6 +118,12 @@ const DrawingBoard = () => {
     link.download = "image.png";
     link.click();
   };
+
+  // ensures that clientRef set only when connecting, but not sure
+  const handleClientRef = useCallback((client) => {
+    console.log("setting client ref");
+    clientRef.current = client;
+  }, []);
 
   return (
     <div
@@ -132,7 +138,12 @@ const DrawingBoard = () => {
         ref={canvasRef}
         width={400}
         height={400}
-        style={{ border: "2px solid black", backgroundColor: "white" }}
+        style={{
+          //border: "2px solid black",
+          backgroundColor: "white",
+          boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.3)",
+          borderRadius: "10px",
+        }}
       />
       {isCurrentPainter && (
         <div>
@@ -146,13 +157,31 @@ const DrawingBoard = () => {
               ))}
             </select>
           </label>
-          <button onClick={() => sendClearMessage()}>Clear</button>
-          <button onClick={() => history.push("/game")}>Go Back</button>
+          <button
+            style={{
+              marginTop: "20px",
+              //boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.3)",
+              borderRadius: "10px",
+            }}
+            onClick={() => sendClearMessage()}
+          >
+            Clear
+          </button>
+          <button
+            style={{
+              //border: "2px solid black",
+              //boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.3)",
+              borderRadius: "10px",
+            }}
+            onClick={() => history.push("/game")}
+          >
+            Go Back
+          </button>
         </div>
       )}
       <SockJsClient
         url={url + "/ws"}
-        topics={["/topic/drawing", "/topic/clear"]}
+        topics={[`/topic/drawing/${lobbyId}`, `/topic/clear/${lobbyId}`]}
         onConnect={() => {
           console.log("connected");
         }}
@@ -160,7 +189,7 @@ const DrawingBoard = () => {
           console.log("Disconnected");
         }}
         onMessage={(msg, topic) => {
-          if (topic === "/topic/drawing") {
+          if (topic === `/topic/drawing/${lobbyId}`) {
             drawLine(
               canvasRef,
               msg.prevX,
@@ -170,23 +199,11 @@ const DrawingBoard = () => {
               msg.color
             );
             console.log("draw", msg);
-          } else if (topic == "/topic/clear") {
+          } else if (topic == `/topic/clear/${lobbyId}`) {
             handleClear(canvasRef.current);
           }
-          drawLine(
-            canvasRef,
-            msg.prevX,
-            msg.prevY,
-            msg.currX,
-            msg.currY,
-            msg.color
-          );
-          console.log(msg);
         }}
-        ref={(client) => {
-          console.log("return");
-          clientRef.current = client;
-        }}
+        ref={handleClientRef}
       />
     </div>
   );

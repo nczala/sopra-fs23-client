@@ -13,6 +13,25 @@ $accentDark: #123597;
 $textColor: white;
 $background: #262632;
 
+// main colors
+$accent-color: #75bbf9;
+$background-color: #ffffff;
+
+//list colors
+$list-color: rgba(186, 197, 216, 0.26);
+$list-hover-color: rgba(117, 187, 249, 0.5);
+
+//button color
+$button-color: rgba(117, 187, 249, 0.5);
+$button-text-color: white;
+
+//text color (h2, div)
+$text-color: black;
+
+// box radius and shadow
+$box-shadow: 0 0.35em 0.35em rgba(0, 0, 0, 0.25);
+$box-radius: 15px;
+
 /* some constants */
 
 $DESKTOP_WIDTH: 1160px;
@@ -26,7 +45,7 @@ $fontDefault: "M PLUS Rounded 1c", sans-serif;
 $fontMono: "Roboto Mono", monospace;
 
 /* a standard drop shadow */
-$dropShadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.25);
+$dropShadow: 0 0.35em 0.35em rgba(0, 0, 0, 0.25);
 
 $borderRadius: 0.75em;
 

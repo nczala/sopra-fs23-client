@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiWithAuth, handleError } from "helpers/api";
+import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useHistory } from "react-router-dom";
@@ -8,32 +8,16 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 //import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 
-const Player = ({ user }) => {
-  const history = useHistory();
-  const handleClick = () => {
-    history.push(`./profile/${user.id}`, { userid: user.id });
-  };
-
+const LobbyRoom = ({ lobby }) => {
   return (
-    <div
-      onClick={() => handleClick()}
-      className={
-        parseInt(localStorage.getItem("id")) === user.id
-          ? "player container logged-out"
-          : "player container logged-in"
-      }
-    >
-      <div className="player username">{user.username}</div>
-      <div className="player id">id: {user.id}</div>
+    <div className="player container logged-out">
+      <div className="player username">{lobby.lobbyName}</div>
+      <div className="player id">id: {lobby.id}</div>
     </div>
   );
 };
 
-Player.propTypes = {
-  user: PropTypes.object,
-};
-
-const Game = () => {
+const Lobby = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
 
@@ -42,14 +26,7 @@ const Game = () => {
   // keep its value throughout render cycles.
   // a component can have as many state variables as you like.
   // more information can be found under https://reactjs.org/docs/hooks-state.html
-  const [users, setUsers] = useState(null);
-
-  const logout = () => {
-    const token = localStorage.getItem("token");
-    apiWithAuth(token).delete("/session");
-    localStorage.clear();
-    history.push("/login");
-  };
+  const [lobbies, setLobbies] = useState(null);
 
   // the effect hook can be used to react to change in your component.
   // in this case, the effect hook is only run once, the first time the component is mounted
@@ -59,16 +36,15 @@ const Game = () => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const token = localStorage.getItem("token");
-        const response = await apiWithAuth(token).get("/users");
-
+        const response = await api.get("/lobbies");
+        console.log(response.data);
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
         // feel free to remove it :)
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
-        setUsers(response.data);
+        setLobbies(response.data);
       } catch (error) {
         console.error(
           `Something went wrong while fetching the users: \n${handleError(
@@ -87,34 +63,48 @@ const Game = () => {
 
   let content = <Spinner />;
 
-  if (users) {
+  if (lobbies) {
     content = (
       <div className="game">
         <ul className="game user-list">
-          {users.map((user) => (
-            <Player user={user} key={user.id} />
+          {lobbies.map((lobby) => (
+            <LobbyRoom lobby={lobby} key={lobby.id} />
           ))}
         </ul>
-        <Button width="100%" onClick={() => logout()}>
-          Logout
-        </Button>
       </div>
     );
   }
 
+  function addLobby() {
+    const requestBody = JSON.stringify({ lobbyName: "lobbyName" });
+    api.post("/lobbies", requestBody);
+  }
+
+  async function refreshLobby() {
+    await getLobbies();
+  }
+
+  async function getLobbies() {
+    const response = await api.get("/lobbies");
+    setLobbies(response.data);
+  }
+
   return (
     <BaseContainer className="game container">
-      <h2>Registered Users</h2>
+      <h2>Registered Lobbies</h2>
       <p className="game paragraph">Get all users from secure endpoint:</p>
       {content}
-      <Button width="100%" onClick={() => history.push("/drawingboard")}>
-        Drawing Board
+      <Button width="10%" onClick={() => addLobby()}>
+        add lobby+
       </Button>
-      <Button width="100%" onClick={() => history.push("/lobbies")}>
-        Lobbies
+      <Button width="10%" onClick={() => refreshLobby()}>
+        refresh
+      </Button>
+      <Button width="10%" onClick={() => history.push("/game")}>
+        Go Back
       </Button>
     </BaseContainer>
   );
 };
 
-export default Game;
+export default Lobby;

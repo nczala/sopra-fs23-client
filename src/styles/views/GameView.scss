@@ -1,0 +1,119 @@
+@import "styles/theme";
+
+.game {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  &.big-container {
+    border: 2px solid $accent-color;
+
+    flex: 0 0 65%;
+  }
+
+  &.small-container {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 35%;
+    border: 2px solid $accent-color;
+
+    &.sub-container1 {
+      flex: 0 0 25%;
+    }
+
+    &.sub-container2 {
+      flex: 0 0 25%;
+    }
+
+    &.sub-container3 {
+      flex: 0 0 50%;
+    }
+  }
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  justify-content: center;
+  border-radius: $box-radius;
+  box-shadow: $box-shadow;
+
+  &.container {
+    background: $background-color;
+    height: 90%;
+    width: 90%;
+  }
+
+  &.header-container {
+    box-shadow: none;
+    border-top-left-radius: $box-radius;
+    border-top-right-radius: $box-radius;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+
+    height: 20%;
+    width: 100%;
+
+    border: 2px solid $accent-color;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    &.sub-container1 {
+      border-top-left-radius: $box-radius;
+      border-top-right-radius: 0px;
+      flex: 35%;
+      height: 100%;
+    }
+
+    &.sub-container2 {
+      align-items: center;
+      color: $accent-color;
+      font-size: 1.3em;
+      font-weight: 700;
+
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+      flex: 30%;
+      height: 100%;
+    }
+
+    &.sub-container3 {
+      border-top-left-radius: 0px;
+      border-top-right-radius: $box-radius;
+      flex: 35%;
+      height: 100%;
+    }
+  }
+
+  &.canvas {
+    height: 80%;
+    width: 100%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: $box-radius;
+    border-bottom-right-radius: $box-radius;
+  }
+}
+
+.paint-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.paint-toolbar label {
+  margin-right: 10px;
+}
+
+.paint-toolbar input[type="color"] {
+  height: 50%;
+  width: 50%;
+  margin-right: 10px;
+}
