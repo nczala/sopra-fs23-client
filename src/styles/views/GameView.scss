@@ -1,35 +1,45 @@
 @import "styles/theme";
 
 .game {
+  align-self: center;
+  height: 100vh;
+  //border: 2px solid $accent-color;
   display: flex;
   flex-direction: row;
   justify-content: center;
 
   &.big-container {
-    border: 2px solid $accent-color;
-
+    //border: 2px solid $accent-color;
     flex: 0 0 65%;
   }
 
   &.small-container {
     justify-content: center;
+    align-items: center;
     display: flex;
     flex-direction: column;
     flex: 0 0 35%;
-    border: 2px solid $accent-color;
+    //border: 2px solid $accent-color;
 
     &.sub-container1 {
       flex: 0 0 25%;
+      width: 100%;
     }
 
     &.sub-container2 {
-      flex: 0 0 25%;
+      width: 100%;
+      flex: 0 0 20%;
     }
 
     &.sub-container3 {
-      flex: 0 0 50%;
+      width: 100%;
+      flex: 0 0 55%;
     }
   }
+}
+
+.logo {
+  max-height: 250px;
 }
 
 .board {
@@ -42,8 +52,8 @@
 
   &.container {
     background: $background-color;
-    height: 90%;
-    width: 90%;
+    height: 800px;
+    width: 1000px;
   }
 
   &.header-container {
@@ -52,11 +62,12 @@
     border-top-right-radius: $box-radius;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+    border-bottom: 3px solid $accent-color;
 
     height: 20%;
     width: 100%;
 
-    border: 2px solid $accent-color;
+    //border: 2px solid $accent-color;
 
     display: flex;
     flex-direction: row;
@@ -67,16 +78,18 @@
       border-top-right-radius: 0px;
       flex: 35%;
       height: 100%;
+      border-right: 6px solid $accent-color;
     }
 
     &.sub-container2 {
       align-items: center;
       color: $accent-color;
-      font-size: 1.3em;
-      font-weight: 700;
+      font-size: 200%;
+      font-weight: 900;
 
       border-top-left-radius: 0px;
       border-top-right-radius: 0px;
+      border-right: 6px solid $accent-color;
       flex: 30%;
       height: 100%;
     }
@@ -86,17 +99,34 @@
       border-top-right-radius: $box-radius;
       flex: 35%;
       height: 100%;
+      flex-direction: column;
     }
   }
 
   &.canvas {
-    height: 80%;
-    width: 100%;
+    box-shadow: none;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     border-bottom-left-radius: $box-radius;
     border-bottom-right-radius: $box-radius;
+    //cursor: url("../../paintbrush.png"), pointer;
   }
+}
+
+.clock-container {
+  display: flex;
+  height: 70%;
+  border: inherit;
+  align-items: center;
+  justify-content: center;
+}
+
+.rounds-container {
+  display: flex;
+  height: 30%;
+  //border: inherit;
+  align-items: center;
+  justify-content: center;
 }
 
 .paint-toolbar {
@@ -105,7 +135,6 @@
   justify-content: center;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid #ccc;
 }
 
 .paint-toolbar label {
@@ -116,4 +145,186 @@
   height: 50%;
   width: 50%;
   margin-right: 10px;
+}
+
+.color-picker {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  width: 50%;
+}
+
+.width-picker {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.range-selection {
+  width: 80%;
+}
+
+.color-picker-button {
+  height: 40px;
+  width: 40px;
+  margin-top: 5px;
+  margin-left: 5px;
+  border-radius: 50%;
+  border: 1px solid gray;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: inset 0 0 0 4px black;
+  }
+}
+
+.color-picker-button.selected {
+  box-shadow: inset 0 0 0 4px black;
+}
+
+.clear-button {
+  margin-top: 10%;
+  width: 70%;
+  border-radius: 15px;
+  background-color: $accent-color;
+  color: $background-color;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: inset 0 0 0 2px black;
+  }
+}
+
+.guessing-container {
+  height: 80%;
+  width: 90%;
+  border-radius: $box-radius;
+  box-shadow: $box-shadow;
+  background-color: $background-color;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 140%;
+  font-weight: 700;
+
+  & h1 {
+    font-size: 150%;
+    font-weight: 700;
+    align-items: center;
+    color: $accent-color;
+  }
+
+  &.word {
+    height: 30%;
+    margin-bottom: 20px;
+    background-color: $list-color;
+    box-shadow: none;
+    border-radius: $box-radius;
+  }
+}
+
+.word-input-container {
+  display: flex;
+  width: 70%;
+  justify-content: center;
+  gap: 5%;
+  margin-bottom: 5%;
+}
+
+.word-input {
+  border-radius: $box-radius;
+  border: 0;
+  background-color: $list-color;
+  width: 70%;
+  padding-left: 7px;
+  text-align: center;
+}
+
+.word-input-button {
+  width: 30%;
+  border-radius: $box-radius;
+  background-color: $button-color;
+  border-color: $button-color;
+  color: $button-text-color;
+  cursor: pointer;
+  font-weight: 700;
+  &:hover {
+    background: $accent-color;
+  }
+}
+
+.ranking-container {
+  height: 90%;
+  width: 90%;
+  border-radius: $box-radius;
+  box-shadow: $box-shadow;
+  background-color: $background-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ranking-table {
+  height: 90%;
+  width: 90%;
+  //  background-color: gray;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ranking-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 90%;
+  height: 10%;
+  margin-bottom: 4%;
+}
+
+.ranking-element {
+  border-radius: $box-radius;
+  background-color: $list-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  &.rank {
+    width: 10%;
+    font-weight: bold;
+  }
+  &.name {
+    width: 50%;
+  }
+  &.role {
+    width: 10%;
+  }
+  &.points {
+    width: 20%;
+  }
+}
+
+.ranking-header {
+  display: flex;
+  flex-direction: row;
+
+  & h1 {
+    padding-left: 50px;
+    font-size: 250%;
+    font-weight: 700;
+    align-items: center;
+    color: $accent-color;
+  }
+
+  & img {
+    height: auto;
+    width: auto;
+    padding-left: 40px;
+  }
 }

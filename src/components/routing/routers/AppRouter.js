@@ -10,6 +10,7 @@ import Test from "components/views/Test";
 import LobbyView from "components/views/LobbyView";
 import LobbySettings from "components/views/LobbySettings";
 import GameView from "components/views/GameView";
+import LoginTest from "components/views/LoginTest";
 
 /**
  * Main router of your application.
@@ -50,6 +51,9 @@ const AppRouter = () => {
         </Route>
         <Route exact path="/gameview">
           <GameView />
+        </Route>
+        <Route exact path="/logintest">
+          <LoginTest />
         </Route>
         <Route exact path="/test">
           <Test />
